@@ -1,9 +1,11 @@
 package com.loginregister.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import jakarta.servlet.RequestDispatcher;
@@ -12,8 +14,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-@WebServlet(urlPatterns = {"/register"})
-public class RegistrationController extends HttpServlet{
+import jakarta.servlet.http.HttpSession;
+@WebServlet(urlPatterns = {"/login"})
+public class LoginController extends HttpServlet{
 	/**
 	 * 
 	 */
@@ -21,29 +24,23 @@ public class RegistrationController extends HttpServlet{
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//get data from registration.jsp
-		String uname = req.getParameter("name");
-		String uemail = req.getParameter("email");
-		String upwd = req.getParameter("pass");
-		String unumber = req.getParameter("contact");
-		
+		String uemail = req.getParameter("username");
+		String upwd = req.getParameter("password");
+
 		Connection con = null;
-		// insert account
 		try {
-			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/loginregister", "root", "123Hieu123@");
-			String QUERY = "insert into users(uname, upwd, uemail, unumber) values(?,?,?,?)";
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/loginregister?useSSL=false", "root", "123Hieu123@");
+			String QUERY = "select * from users where uemail = ? and upwd = ?";
 			PreparedStatement pst = con.prepareStatement(QUERY);
-			pst.setString(1, uname);
-			pst.setString(3, uemail);
+			pst.setString(1, uemail);
 			pst.setString(2, upwd);
-			pst.setString(4, unumber);
-			int index = pst.executeUpdate();
-			RequestDispatcher rd = null;
-			if(index > 0 ) {
-				resp.sendRedirect("login.jsp");
+			ResultSet rs = pst.executeQuery();
+			HttpSession session = req.getSession();
+			if(rs.next()) {
+				session.setAttribute("name", rs.getString("uname"));
+				resp.sendRedirect("index.jsp");
 			}else {
-				System.out.println("dang ky that bai");
-				rd = req.getRequestDispatcher("register.jsp");
+				RequestDispatcher rd = req.getRequestDispatcher("login.jsp");
 				rd.forward(req, resp);
 			}
 		} catch (Exception e) {
