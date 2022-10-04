@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
+	<input type="hidden" id="status" value="<%=request.getAttribute("status") %>" />
 	<div class="main">
 
 		<!-- Sign up form -->
@@ -29,7 +29,7 @@
 							<div class="form-group">
 								<label for="name"><i
 									class="zmdi zmdi-account material-icons-name"></i></label> <input
-									type="text" name="name" id="name" placeholder="Your Name" />
+									type="text" name="name" id="name" placeholder="Your Name"/>
 							</div>
 							<div class="form-group">
 								<label for="email"><i class="zmdi zmdi-email"></i></label> <input
@@ -77,8 +77,29 @@
 	</div>
 	<!-- JS -->
 	<script src="vendor/jquery/jquery.min.js"></script>
+	<!-- sweet alert cdn -->
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js">
+		
+	</script>
+	
 	<script src="js/main.js"></script>
-
+	<script type="text/javascript">
+		var status = document.getElementById("status").value;
+		if(status == "invalidUname"){
+			swal({title:"Wrong", text:"Please enter your username", icon:"error",});
+		}else if(status == "invalidUemail"){
+			swal({title:"Wrong", text:"Please enter your email", icon:"error",});
+		}else if(status == "invalidUpwd"){
+			swal({title:"Wrong", text:"Please enter your password", icon:"error",});
+		}else if(status == "invalidUrpwd"){
+			swal({title:"Wrong", text:"Please enter your re-password", icon:"error",});
+		}else if(status == "invalidNotEqualsPwd"){
+			swal({title:"Wrong", text:"Please enter your correct password", icon:"error",});
+		}else if(status == "invalidUnumber"){
+			swal({title:"Wrong", text:"Please enter your number contact", icon:"error",});
+		}
+		
+	</script>
 
 
 </body>
